@@ -79,21 +79,29 @@ def send_log(username, clicked_time):
         print("[ERROR] Could not send log:", e)
 
 #DRIVER
-username = input("Enter your name: ").strip()
 click_time = fetch_click_time()
 
-if click_time:
-    
-    wait_until(click_time)
-    
-    pyautogui.click()
-    
-    clicked_at = datetime.utcnow().strftime('%H:%M:%S.%f')[:-3]
-    
-    print(f"[CLIENT] Clicked at {clicked_at} UTC")
-    
-    send_log(username, clicked_at)
+if not click_time:
+    print("[CLIENT] Could not fetch click time.")
     
 else:
-    
-    print("[CLIENT] Could not fetch click time.")
+    wait_until(click_time)
+
+    while True:
+        
+        username = input("Enter your name (or press Enter to stop): ").strip()
+        
+        if not username:
+            
+            print("[CLIENT] Exiting user log loop.")
+            
+            break
+
+        pyautogui.click()
+        
+        clicked_at = datetime.utcnow().strftime('%H:%M:%S.%f')[:-3]
+        
+        print(f"[CLIENT] {username} clicked at {clicked_at} UTC")
+        
+        send_log(username, clicked_at)
+
